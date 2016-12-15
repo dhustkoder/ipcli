@@ -14,13 +14,13 @@
 #include <netdb.h>
 #include <arpa/inet.h>
 
-static const std::string RSA_CHUNK[] = {
+constexpr const char* const kRsaChunk[] = {
 	"1321277432058722840622950990822933849527763264961655079678763",
 	"124710459426827943004376449897985582167801707960697037164044904",
 };
 
-static const std::vector<std::string> HOSTS[] = {
-	{
+constexpr const char* const kHosts[2][5] = {
+	{ 
 		"login01.tibia.com",
 		"login02.tibia.com",
 		"login03.tibia.com",
@@ -36,7 +36,7 @@ static const std::vector<std::string> HOSTS[] = {
 	}
 };
 
-static const std::string RSA_OT = ""
+constexpr const char* const kRsaOt = ""
 	"1091201329673994292788609605089955415282375029027981291234687579"
 	"3726629149257644633073969600111060390723088861007265581882535850"
 	"3429057592827629436413108566029093628212635953836686562675849720"
@@ -210,10 +210,10 @@ static void launch(const std::vector<std::string> &args)
 
 	{
 		std::string::size_type pos = 0;
-		if((pos = data.find(RSA_CHUNK[0])) != std::string::npos) {
-			patch(data, pos, pad(RSA_OT, 310));
-		} else if((pos = data.find(RSA_CHUNK[1])) != std::string::npos) {
-			patch(data, pos, pad(RSA_OT, 310));
+		if((pos = data.find(kRsaChunk[0])) != std::string::npos) {
+			patch(data, pos, pad(kRsaOt, 310));
+		} else if((pos = data.find(kRsaChunk[1])) != std::string::npos) {
+			patch(data, pos, pad(kRsaOt, 310));
 		} else {
 			fprintf(stderr, "Failed to patch the RSA key.\n");
 			return;
@@ -224,13 +224,13 @@ static void launch(const std::vector<std::string> &args)
 		const std::string &host1 = pad(host, 17);
 		const std::string &host2 = pad(host, 19);
 
-		for(const auto &host: HOSTS[0]) {
+		for(const auto &host: kHosts[0]) {
 			std::string::size_type pos = 0;
 			if((pos = data.find(host)) != std::string::npos)
 				patch(data, pos, host1);
 		}
 
-		for(const auto &host: HOSTS[1]) {
+		for(const auto &host: kHosts[1]) {
 			std::string::size_type pos = 0;
 			if((pos = data.find(host)) != std::string::npos)
 				patch(data, pos, host2);
